@@ -8,8 +8,6 @@ class AudioPluginAudioProcessorEditor final : public juce::AudioProcessorEditor
 public:
     explicit AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor&);
     ~AudioPluginAudioProcessorEditor() override;
-
-
     void paint (juce::Graphics&) override;
     void resized() override;
 

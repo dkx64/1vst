@@ -30,12 +30,14 @@ pkgs.mkShell {
     xorg.libXtst
     libsysprof-capture
     sqlite.dev
+    ninja
   ];
   nativeBuildInputs = with pkgs; [
     cmake
     pkg-config
     patchelf
     gdb
+    clang-tools
   ];
 
   NIX_LDFLAGS = (toString [
