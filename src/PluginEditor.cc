@@ -1,31 +1,24 @@
-#include "PluginProcessor.hh"
 #include "PluginEditor.hh"
+#include "PluginProcessor.hh"
 
-
-AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p)
-{
-    juce::ignoreUnused (processorRef);
-    setSize (400, 300);
+AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor(
+    AudioPluginAudioProcessor &p)
+    : AudioProcessorEditor(&p), processorRef(p) {
+  juce::ignoreUnused(processorRef);
+  setSize(400, 300);
 }
 
-AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor()
-{
+AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor() {}
+
+void AudioPluginAudioProcessorEditor::paint(juce::Graphics &g) {
+
+  g.fillAll(
+      getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
+
+  g.setColour(juce::Colours::white);
+  g.setFont(15.0f);
+  g.drawFittedText("Hello World!", getLocalBounds(),
+                   juce::Justification::centred, 1);
 }
 
-
-void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
-{
-
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
-    g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), juce::Justification::centred, 1);
-}
-
-void AudioPluginAudioProcessorEditor::resized()
-{
-
-
-}
+void AudioPluginAudioProcessorEditor::resized() {}

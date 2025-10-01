@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(1VST VERSION 0.0.1)
 
 add_subdirectory(juce)
-add_subdirectory(ringbuf)
+add_subdirectory(circularbuffer)
 
 juce_add_plugin(1vst
     # VERSION ...
@@ -51,7 +51,7 @@ target_link_libraries(1vst
         # AudioPluginData           # If we'd created a binary data target, we'd link to it here
         juce::juce_audio_utils
     PUBLIC
-        ringbuf
+        circularbuffer
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
         juce::juce_recommended_warning_flags)

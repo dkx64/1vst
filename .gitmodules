@@ -1,3 +1,6 @@
 [submodule "juce"]
 	path = juce
 	url = https://github.com/juce-framework/juce
+[submodule "circularbuffer"]
+	path = circularbuffer
+	url = https://github.com/vinitjames/circularbuffer

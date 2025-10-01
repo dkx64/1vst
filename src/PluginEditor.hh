@@ -2,19 +2,16 @@
 
 #include "PluginProcessor.hh"
 
-
-class AudioPluginAudioProcessorEditor final : public juce::AudioProcessorEditor
-{
+class AudioPluginAudioProcessorEditor final
+    : public juce::AudioProcessorEditor {
 public:
-    explicit AudioPluginAudioProcessorEditor (AudioPluginAudioProcessor&);
-    ~AudioPluginAudioProcessorEditor() override;
-    void paint (juce::Graphics&) override;
-    void resized() override;
+  explicit AudioPluginAudioProcessorEditor(AudioPluginAudioProcessor &);
+  ~AudioPluginAudioProcessorEditor() override;
+  void paint(juce::Graphics &) override;
+  void resized() override;
 
 private:
+  AudioPluginAudioProcessor &processorRef;
 
-
-    AudioPluginAudioProcessor& processorRef;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessorEditor)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessorEditor)
 };
