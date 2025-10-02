@@ -1,3 +1,6 @@
 [submodule "juce"]
 	path = juce
 	url = https://github.com/juce-framework/juce
+[submodule "dringbuf"]
+	path = dringbuf
+	url = https://github.com/dkx64/dringbuf
