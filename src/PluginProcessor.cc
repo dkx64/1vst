@@ -1,9 +1,9 @@
 #include "PluginEditor.hh"
+#include "juce_audio_processors/juce_audio_processors.h"
 #include "juce_core/juce_core.h"
-#include <algorithm>
 #include <cmath>
-#include <cstddef>
 #include <cstdio>
+#include <memory>
 
 
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
@@ -15,8 +15,12 @@ AudioPluginAudioProcessor::AudioPluginAudioProcessor()
 #endif
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ) {
-}
+      ),
+     apvts(*this, nullptr, "PARAMETERS",
+         {
+             std::make_unique<juce::AudioParameterFloat> ("feedback", "Feedback", juce::NormalisableRange<float> (0.0f, 1.0f), 0.5f),
+             std::make_unique<juce::AudioParameterBool> ("is_timed", "Timed", true)
+         }) {}
 
 AudioPluginAudioProcessor::~AudioPluginAudioProcessor() {}
 
@@ -71,10 +75,7 @@ void AudioPluginAudioProcessor::changeProgramName(int index,
 void AudioPluginAudioProcessor::prepareToPlay(double sampleRate,
                                               int samplesPerBlock) {
   juce::ignoreUnused(sampleRate, samplesPerBlock);
-  DelayBuffers.erase(DelayBuffers.begin(),DelayBuffers.end());
-  for (int i = 0; i < getTotalNumInputChannels(); ++i) {
-      DelayBuffers.push_back(DRingBuf<float>(sampleRate));
-  }
+  delay.reinit(getTotalNumInputChannels(), sampleRate);
 }
 
 void AudioPluginAudioProcessor::releaseResources() {}
@@ -107,11 +108,11 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   for (auto channel = 0; channel < totalNumInputChannels; ++channel) {
     auto *channelData = buffer.getWritePointer(channel);
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
-        if (DelayBuffers[channel].is_full()) {
-            channelData[sample] += .5*DelayBuffers[channel].get_from_tail(4410);
-            DelayBuffers[channel].pop();
-        }
-        DelayBuffers[channel].push(channelData[sample]);
+        channelData[sample] += delay.process_sample(
+            channelData[sample],
+            *apvts.getRawParameterValue("feedback"),
+            channel
+        );
     }
   }
   juce::ignoreUnused(totalNumOutputChannels);

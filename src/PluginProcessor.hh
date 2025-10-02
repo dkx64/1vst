@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DRingBuf.hh"
+#include "Delay.hh"
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class AudioPluginAudioProcessor final : public juce::AudioProcessor {
@@ -36,6 +36,7 @@ public:
   void setStateInformation(const void *data, int sizeInBytes) override;
 
 private:
-  std::vector<DRingBuf<float>> DelayBuffers;
+  juce::AudioProcessorValueTreeState apvts;
+  dkdsp::Delay delay;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };
