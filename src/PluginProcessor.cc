@@ -107,8 +107,11 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   for (int channel = 0; channel < totalNumInputChannels; ++channel) {
     auto *channelData = buffer.getWritePointer(channel);
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
+        if (DelayBuffers[channel].is_full()) {
+            channelData[sample] += .5*DelayBuffers[channel].front();
+            DelayBuffers[channel].pop();
+        }
         DelayBuffers[channel].push(channelData[sample]);
-        channelData[sample] = DelayBuffers[channel].pop();
         // std::cout << DelayBuffers[(size_t)channel].size() << std::endl;
     }
   }
