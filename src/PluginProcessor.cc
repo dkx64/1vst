@@ -1,9 +1,10 @@
 #include "PluginEditor.hh"
-#include "circular_buffer.h"
 #include "juce_core/juce_core.h"
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <cstdio>
+
 
 AudioPluginAudioProcessor::AudioPluginAudioProcessor()
     : AudioProcessor(
@@ -72,8 +73,7 @@ void AudioPluginAudioProcessor::prepareToPlay(double sampleRate,
   juce::ignoreUnused(sampleRate, samplesPerBlock);
   DelayBuffers.erase(DelayBuffers.begin(),DelayBuffers.end());
   for (int i = 0; i < getTotalNumInputChannels(); ++i) {
-      DelayBuffers.push_back(CircularBuffer<float>(sampleRate));
-      DelayBuffers[(size_t)i].push_back(0.0);
+      DelayBuffers.push_back(DRingBuf<float>(sampleRate));
   }
 }
 
@@ -105,12 +105,11 @@ void AudioPluginAudioProcessor::processBlock(juce::AudioBuffer<float> &buffer,
   auto totalNumOutputChannels = getTotalNumOutputChannels();
 
   for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-    auto *inputData = buffer.getReadPointer(channel);
-    auto *outputData = buffer.getWritePointer(channel);
+    auto *channelData = buffer.getWritePointer(channel);
     for (int sample = 0; sample < buffer.getNumSamples(); ++sample) {
-        outputData[sample] = std::clamp(
-            inputData[sample] + (0.5 * DelayBuffers[(size_t)channel].front()), -1.0, 1.0);
-        DelayBuffers[(size_t)channel].push_back(outputData[sample]);
+        DelayBuffers[channel].push(channelData[sample]);
+        channelData[sample] = DelayBuffers[channel].pop();
+        // std::cout << DelayBuffers[(size_t)channel].size() << std::endl;
     }
   }
   juce::ignoreUnused(totalNumOutputChannels);

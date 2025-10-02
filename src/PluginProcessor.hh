@@ -1,6 +1,6 @@
 #pragma once
 
-#include "circular_buffer.h"
+#include "DRingBuf.hh"
 #include <juce_audio_processors/juce_audio_processors.h>
 
 class AudioPluginAudioProcessor final : public juce::AudioProcessor {
@@ -36,6 +36,6 @@ public:
   void setStateInformation(const void *data, int sizeInBytes) override;
 
 private:
-  std::vector<CircularBuffer<float>> DelayBuffers;
+  std::vector<DRingBuf<float>> DelayBuffers;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioPluginAudioProcessor)
 };
